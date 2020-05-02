@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+
+<style>
+div {
+  background-color: lightgrey;
+  width: 300px;
+  border: 15px solid green;
+  padding: 50px;
+  max-width: 500px;
+  margin: auto;
+}
+</style>
+
+<div class="content">
+<body>
+
+<h2>JavaScript Alert</h2>
+
+<button id="alert" onclick="myAlertFunction()">Alert</button>
+
+<script>
+function myAlertFunction() {
+  alert("I am an alert box!");
+}
+</script>
+
+<h2>JavaScript Confirm Box</h2>
+
+<button id="confirm" onclick="myConfirmFunction()">Confirm</button>
+
+<script>
+function myConfirmFunction() {
+  var txt;
+  if (confirm("Press a button!")) {
+    txt = "You pressed OK!";
+  } else {
+    txt = "You pressed Cancel!";
+  }
+  document.getElementById("demo").innerHTML = txt;
+}
+</script>
+
+<h2>JavaScript Prompt</h2>
+
+<button id="prompt" onclick="myPromptFunction()">Prompt</button>
+
+<p id="demo"></p>
+
+<script>
+function myPromptFunction() {
+  var txt;
+  var person = prompt("Please enter your name:", "John Smith");
+  if (person == null || person == "") {
+    txt = "User cancelled the prompt.";
+  } else {
+    txt = "Hello " + person + "! How are you today?";
+  }
+  document.getElementById("demo").innerHTML = txt;
+}
+</script>
+</div>
+</body>
+</html>
