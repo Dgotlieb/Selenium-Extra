@@ -2,25 +2,22 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.fail;
+import static org.testng.FileAssert.fail;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Report {
     private static ChromeDriver driver;
     // create ExtentReports and attach reporter(s)
@@ -30,7 +27,7 @@ public class Report {
 
     @BeforeClass
     public static void beforeClass() {
-        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("C:\\Users\\dgotl\\IdeaProjects\\relativelocator\\extent.html");
+        ExtentSparkReporter htmlReporter = new ExtentSparkReporter("C:\\Users\\dgotl\\IdeaProjects\\TestNGMaven\\extent.html");
         // attach reporter
         extent = new ExtentReports();
         extent.attachReporter(htmlReporter);
@@ -44,7 +41,7 @@ public class Report {
 
         boolean driverEstablish = false;
         try {
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\dgotl\\Downloads\\chromedriver\\chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\dgotl\\Downloads\\chrome\\chromedriver.exe");
             driver = new ChromeDriver();
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             driver.manage().window().maximize();
@@ -69,11 +66,14 @@ public class Report {
             String firstWindowString = driver.getWindowHandle();
             System.out.println("Window String: " + firstWindowString);
             pageOpened = true;
+            String timeNow = String.valueOf(System.currentTimeMillis());
+            test.info("details", MediaEntityBuilder.createScreenCaptureFromPath(takeScreenShot(timeNow)).build());
 
         } catch (Exception e) {
             e.printStackTrace();
             test.log(Status.FAIL, "Google Translate page was not found " + e.getMessage());
             pageOpened = false;
+
         } finally {
             if (pageOpened) {
                 test.log(Status.PASS, "Open webpage " + "Webpage opened successfully");
@@ -113,5 +113,17 @@ public class Report {
         driver.quit();
         // build and flush report
         extent.flush();
+    }
+
+    private static String takeScreenShot(String ImagesPath) {
+        TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+        File screenShotFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
+        File destinationFile = new File(ImagesPath+".png");
+        try {
+            FileUtils.copyFile(screenShotFile, destinationFile);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return ImagesPath+".png";
     }
 }
